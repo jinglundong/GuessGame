@@ -29,7 +29,7 @@ class TestGame(unittest.TestCase):
 
     def test_query_game(self):
         test_game = Game(
-            game_id = 'ID1', answer = '1234', is_solved = False)
+            game_id = 'ID1', answer = '1234')
         test_game_key = test_game.put()
 
         games = Game.query_game('ID1')
@@ -41,13 +41,30 @@ class TestGame(unittest.TestCase):
         now = datetime.now()
 
         test_game_early = Game(
-            game_id = 'ID1', answer = '1234', date = now, is_solved = False)
+            game_id = 'ID_OLD', answer = '1234', date = now)
         test_game_early_key = test_game_early.put()
 
         test_game_later = Game(
-            game_id = 'ID2', answer = '1234', date = now + timedelta(days=1),  is_solved = False)
+            game_id = 'ID_OLD', answer = '1234', date = now + timedelta(days=1))
         test_game_later_key = test_game_later.put()
 
         games = Game.list_all_games_from_new_to_old()
 
         self.assertTrue(games[0].date - games[1].date == timedelta(days=1))
+
+    def test_wrong_guess(self):
+        test_game = Game(
+            game_id = 'ID1', answer = '1234')
+        test_game_key = test_game.put()
+
+        result = Game.guess('ID1', '0000')
+        self.assertFalse(result)
+
+    def test_right_guess(self):
+        test_game = Game(
+            game_id = 'ID1', answer = '1234')
+        test_game_key = test_game.put()
+
+        result = Game.guess('ID1', '1234')
+        self.assertTrue(result)
+        self.assertTrue(Game.query_game('ID1')[0].is_solved)
