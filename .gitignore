@@ -90,3 +90,6 @@ ENV/
 
 # Ignore temp files
 /**/*~
+
+# Swap files
+*.swp
