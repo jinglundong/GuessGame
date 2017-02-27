@@ -24,3 +24,12 @@ class TestGame(unittest.TestCase):
 
         returned_test_game = test_game_key.get()
         self.assertEqual('1234', returned_test_game.answer)
+
+    def test_query_game(self):
+        test_game = Game(
+            game_id = 'ID1', answer = '1234')
+        test_game_key = test_game.put()
+
+        games = Game.query_game('ID1')
+        self.assertEqual(1, len(games))
+        self.assertEqual('ID1', games[0].game_id)

@@ -9,4 +9,4 @@ class Game(ndb.Model):
 
     @classmethod
     def query_game(cls, game_id):
-        return cls.query(ancestor = game_id).fetch()
+        return Game.query(Game.game_id == game_id).fetch()
