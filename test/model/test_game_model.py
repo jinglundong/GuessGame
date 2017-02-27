@@ -1,4 +1,6 @@
 import unittest
+from datetime import datetime
+from datetime import timedelta
 
 from google.appengine.ext import ndb
 from google.appengine.api import memcache
@@ -34,3 +36,18 @@ class TestGame(unittest.TestCase):
         self.assertEqual(1, len(games))
         self.assertEqual('ID1', games[0].game_id)
         self.assertEqual(False, games[0].is_solved)
+
+    def test_list_all_games_from_new_to_old(self):
+        now = datetime.now()
+
+        test_game_early = Game(
+            game_id = 'ID1', answer = '1234', date = now, is_solved = False)
+        test_game_early_key = test_game_early.put()
+
+        test_game_later = Game(
+            game_id = 'ID2', answer = '1234', date = now + timedelta(days=1),  is_solved = False)
+        test_game_later_key = test_game_later.put()
+
+        games = Game.list_all_games_from_new_to_old()
+
+        self.assertTrue(games[0].date - games[1].date == timedelta(days=1))

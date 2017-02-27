@@ -11,3 +11,7 @@ class Game(ndb.Model):
     @classmethod
     def query_game(cls, game_id):
         return Game.query(Game.game_id == game_id).fetch()
+
+    @classmethod
+    def list_all_games_from_new_to_old(cls):
+        return Game.query().order(-Game.date).fetch()
