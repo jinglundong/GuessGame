@@ -6,6 +6,7 @@ class Game(ndb.Model):
     game_id = ndb.StringProperty()
     answer = ndb.StringProperty()
     date = ndb.DateTimeProperty(auto_now_add=True)
+    is_solved = ndb.BooleanProperty()
 
     @classmethod
     def query_game(cls, game_id):

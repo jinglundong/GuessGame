@@ -27,9 +27,10 @@ class TestGame(unittest.TestCase):
 
     def test_query_game(self):
         test_game = Game(
-            game_id = 'ID1', answer = '1234')
+            game_id = 'ID1', answer = '1234', is_solved = False)
         test_game_key = test_game.put()
 
         games = Game.query_game('ID1')
         self.assertEqual(1, len(games))
         self.assertEqual('ID1', games[0].game_id)
+        self.assertEqual(False, games[0].is_solved)
