@@ -68,3 +68,12 @@ class TestGame(unittest.TestCase):
         result = Game.guess('ID1', '1234')
         self.assertTrue(result)
         self.assertTrue(Game.query_game('ID1')[0].is_solved)
+
+    def test_new_game(self):
+        Game.new_game('ID1', '1111')
+
+        games = Game.query().fetch()
+
+        self.assertEqual(1, len(games))
+        self.assertEqual('ID1', games[0].game_id)
+        self.assertEqual('1111', games[0].answer)

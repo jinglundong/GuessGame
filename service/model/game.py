@@ -25,3 +25,9 @@ class Game(ndb.Model):
             return True
         else:
             return False
+
+    @classmethod
+    def new_game(cls, game_id, answer):
+        game = Game(
+            game_id = game_id, answer = answer)
+        game.put()
