@@ -46,7 +46,12 @@ class GameListPage(webapp2.RequestHandler):
         game_list = ""
  
         for game in games:
+            game_list += 'Game ID: '
             game_list += game.game_id
+            game_list += ' Answer: '
+            game_list += game.answer
+            game_list += ' Is sovled: '
+            game_list += str(game.is_solved)
             game_list += '</br>'
 
         self.response.write(
@@ -55,15 +60,25 @@ class GameListPage(webapp2.RequestHandler):
 class CreateGame(webapp2.RequestHandler):
     def post(self):
         game_id = str(int(math.floor(random.random() * 10000000)))
-        answer = str(int(math.floor(random.random() * 1000)))
+        answer = str(int(math.floor(random.random() * 10000)))
 
         Game.new_game(game_id, answer)
 
+class Guess(webapp2.RequestHandler):
+    def post(self):
+        game_id = self.request.get('game_id')
+        guess = self.request.get('guess')
+
+        result = 'right' if Game.guess(game_id, guess) else 'wrong'
+
+        self.response.write(
+            '<html><body>You guessed {}</body></html>'.format(result))
 
 app = webapp2.WSGIApplication([
     ('/second', SecondPage),
     ('/', MainPage),
     ('/games', GameListPage),
-    ('/new_game', CreateGame)
+    ('/new_game', CreateGame),
+    ('/guess', Guess)
  
 ], debug=True)
