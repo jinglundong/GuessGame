@@ -13,7 +13,11 @@
 # limitations under the License.
 
 import webapp2
+import random
+import math
+
 from google.appengine.api import users
+from service.model.game import Game
 
 
 class MainPage(webapp2.RequestHandler):
@@ -36,8 +40,30 @@ class SecondPage(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.write('Hello, World!')
 
+class GameListPage(webapp2.RequestHandler):
+    def get(self):
+        games = Game.list_all_games_from_new_to_old()
+        game_list = ""
+ 
+        for game in games:
+            game_list += game.game_id
+            game_list += '</br>'
+
+        self.response.write(
+            '<html><body>{}</body></html>'.format(game_list))
+
+class CreateGame(webapp2.RequestHandler):
+    def post(self):
+        game_id = str(int(math.floor(random.random() * 10000000)))
+        answer = str(int(math.floor(random.random() * 1000)))
+
+        Game.new_game(game_id, answer)
+
 
 app = webapp2.WSGIApplication([
     ('/second', SecondPage),
     ('/', MainPage),
+    ('/games', GameListPage),
+    ('/new_game', CreateGame)
+ 
 ], debug=True)
