@@ -9,3 +9,8 @@ class Guess(ndb.Model):
     aligned = ndb.IntegerProperty()
     not_aligned = ndb.IntegerProperty() 
     date = ndb.DateTimeProperty(auto_now_add=True)
+ 
+    @classmethod
+    def list_all_guess_of_a_game(cls, game_id):
+        return Guess.query(Guess.game_id == game_id).fetch()
+

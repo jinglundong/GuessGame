@@ -18,6 +18,7 @@ import math
 
 from google.appengine.api import users
 from service.model.game import Game
+from service.model.guess import Guess
 
 
 class MainPage(webapp2.RequestHandler):
@@ -64,21 +65,45 @@ class CreateGame(webapp2.RequestHandler):
 
         Game.new_game(game_id, answer)
 
-class Guess(webapp2.RequestHandler):
+class MakeGuess(webapp2.RequestHandler):
     def post(self):
         game_id = self.request.get('game_id')
-        guess = self.request.get('guess')
+        guess_num = self.request.get('guess')
 
-        result = 'right' if Game.guess(game_id, guess) else 'wrong'
+        guess = Guess(
+                    game_id = game_id,
+                    user_id = 'test_user',
+                    guess_num = str(guess_num),
+                    aligned = 0,
+                    not_aligned = 0)
+        guess.put()
+
+        result = 'right' if Game.guess(game_id, guess_num) else 'wrong'
 
         self.response.write(
             '<html><body>You guessed {}</body></html>'.format(result))
+
+class ListGuesses(webapp2.RequestHandler):
+    def get(self):
+        game_id = self.request.get('game_id')
+
+        guesses = Guess.list_all_guess_of_a_game(game_id)
+
+        result = ""
+        for guess in guesses:
+            result += str(guess)
+            result += '</br>'
+
+        self.response.write(
+            '<html><body>Guesses {}</body></html>'.format(result))
 
 app = webapp2.WSGIApplication([
     ('/second', SecondPage),
     ('/', MainPage),
     ('/games', GameListPage),
     ('/new_game', CreateGame),
-    ('/guess', Guess)
+    ('/guess', MakeGuess),
+    ('/list_guesses', ListGuesses)
+
  
 ], debug=True)

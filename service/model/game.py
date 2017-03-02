@@ -18,7 +18,11 @@ class Game(ndb.Model):
 
     @classmethod
     def guess(cls, game_id, guessNum):
-        game = Game.query(Game.game_id == game_id).fetch()[0]
+        games = Game.query(Game.game_id == game_id).fetch()
+
+        if games:
+            game = games[0]
+
         if guessNum == game.answer:
             game.is_solved = True
             game.put()
