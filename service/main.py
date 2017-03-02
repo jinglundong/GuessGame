@@ -36,11 +36,6 @@ class MainPage(webapp2.RequestHandler):
         self.response.write(
             '<html><body>{}</body></html>'.format(greeting))
 
-class SecondPage(webapp2.RequestHandler):
-    def get(self):
-        self.response.headers['Content-Type'] = 'text/plain'
-        self.response.write('Hello, World!')
-
 class GameListPage(webapp2.RequestHandler):
     def get(self):
         games = Game.list_all_games_from_new_to_old()
@@ -98,7 +93,6 @@ class ListGuesses(webapp2.RequestHandler):
             '<html><body>Guesses {}</body></html>'.format(result))
 
 app = webapp2.WSGIApplication([
-    ('/second', SecondPage),
     ('/', MainPage),
     ('/games', GameListPage),
     ('/new_game', CreateGame),
