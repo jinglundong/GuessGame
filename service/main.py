@@ -17,9 +17,10 @@ import random
 import math
 
 from google.appengine.api import users
+
 from service.model.game import Game
 from service.model.guess import Guess
-
+from service.indicator import Indicator
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
@@ -65,12 +66,17 @@ class MakeGuess(webapp2.RequestHandler):
         game_id = self.request.get('game_id')
         guess_num = self.request.get('guess')
 
+        answer = Game.query_game(game_id)[0].answer
+        
+        indicator = Indicator()
+        aligned, not_aligned = indicator.indicate(guess_num, answer)
+
         guess = Guess(
                     game_id = game_id,
                     user_id = 'test_user',
                     guess_num = str(guess_num),
-                    aligned = 0,
-                    not_aligned = 0)
+                    aligned = aligned,
+                    not_aligned = not_aligned)
         guess.put()
 
         result = 'right' if Game.guess(game_id, guess_num) else 'wrong'
