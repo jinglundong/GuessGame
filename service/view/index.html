@@ -1,0 +1,8 @@
+{% for game in games %}
+    <div class="row">
+        Game:
+        <a href="/game?game_id={{ game.game_id}}">
+            {{ game.game_id }}
+        </a>
+    </div>
+{% endfor %}

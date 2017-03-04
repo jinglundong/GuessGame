@@ -13,14 +13,21 @@
 # limitations under the License.
 
 import webapp2
+import jinja2
 import random
 import math
+import os
 
 from google.appengine.api import users
 
 from service.model.game import Game
 from service.model.guess import Guess
 from service.indicator import Indicator
+
+JINJA_ENVIRONMENT = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True)
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
@@ -40,19 +47,13 @@ class MainPage(webapp2.RequestHandler):
 class GameListPage(webapp2.RequestHandler):
     def get(self):
         games = Game.list_all_games_from_new_to_old()
-        game_list = ""
- 
-        for game in games:
-            game_list += 'Game ID: '
-            game_list += game.game_id
-            game_list += ' Answer: '
-            game_list += game.answer
-            game_list += ' Is sovled: '
-            game_list += str(game.is_solved)
-            game_list += '</br>'
 
-        self.response.write(
-            '<html><body>{}</body></html>'.format(game_list))
+        template_values = {
+            'games': games
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('view/index.html')
+        self.response.write(template.render(template_values))
 
 class CreateGame(webapp2.RequestHandler):
     def post(self):
@@ -99,11 +100,11 @@ class ListGuesses(webapp2.RequestHandler):
             '<html><body>Guesses {}</body></html>'.format(result))
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage),
+    ('/', GameListPage),
     ('/games', GameListPage),
     ('/new_game', CreateGame),
     ('/guess', MakeGuess),
-    ('/list_guesses', ListGuesses)
+    ('/game', ListGuesses)
 
  
 ], debug=True)
