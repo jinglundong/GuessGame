@@ -92,13 +92,12 @@ class ListGuesses(webapp2.RequestHandler):
 
         guesses = Guess.list_all_guess_of_a_game(game_id)
 
-        result = ""
-        for guess in guesses:
-            result += str(guess)
-            result += '</br>'
+        template_values = {
+            'guesses': guesses 
+        }
 
-        self.response.write(
-            '<html><body>Guesses {}</body></html>'.format(result))
+        template = JINJA_ENVIRONMENT.get_template('view/game.html')
+        self.response.write(template.render(template_values))
 
 app = webapp2.WSGIApplication([
     ('/', GameListPage),
