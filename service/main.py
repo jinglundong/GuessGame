@@ -61,6 +61,7 @@ class CreateGame(webapp2.RequestHandler):
         answer = str(int(math.floor(random.random() * 10000)))
 
         Game.new_game(game_id, answer)
+        return webapp2.redirect('/game?game=' + game_id)
 
 class MakeGuess(webapp2.RequestHandler):
     def post(self):
