@@ -61,7 +61,7 @@ class CreateGame(webapp2.RequestHandler):
         answer = str(int(math.floor(random.random() * 10000)))
 
         Game.new_game(game_id, answer)
-        return webapp2.redirect('/game?game=' + game_id)
+        return webapp2.redirect('/game?game_id=' + game_id)
 
 class MakeGuess(webapp2.RequestHandler):
     def post(self):
@@ -81,10 +81,7 @@ class MakeGuess(webapp2.RequestHandler):
                     not_aligned = not_aligned)
         guess.put()
 
-        result = 'right' if Game.guess(game_id, guess_num) else 'wrong'
-
-        self.response.write(
-            '<html><body>You guessed {}</body></html>'.format(result))
+        return webapp2.redirect('/game?game_id=' + game_id)
 
 class ListGuesses(webapp2.RequestHandler):
     def get(self):
@@ -93,7 +90,8 @@ class ListGuesses(webapp2.RequestHandler):
         guesses = Guess.list_all_guess_of_a_game(game_id)
 
         template_values = {
-            'guesses': guesses 
+            'guesses': guesses,
+            'game_id': game_id
         }
 
         template = JINJA_ENVIRONMENT.get_template('view/game.html')

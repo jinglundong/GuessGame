@@ -3,3 +3,11 @@
         Guess: {{ guess.guess_num }}, A: {{ guess.aligned }}, NA: {{ guess.not_aligned }}
     </div>
 {% endfor %}
+
+<div class="row">
+    <form action="/guess" method="post">
+        <input type="hidden" name="game_id" value={{game_id}}>
+        <input type="text" name="guess">
+        <input type="submit" value="Guess">
+    </form>
+</div>
