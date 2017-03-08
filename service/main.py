@@ -83,6 +83,7 @@ class MakeGuess(webapp2.RequestHandler):
                     not_aligned = not_aligned)
         guess.put()
         guesses.insert(0, guess)
+        guesses.reverse()
 
         template_values = {
             'guesses': guesses,

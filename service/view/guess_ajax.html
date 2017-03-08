@@ -1,7 +1,20 @@
-<div id="guesses">
-{% for guess in guesses %}
-    <div class="row">
-        Guess: {{ guess.guess_num }}, A: {{ guess.aligned }}, NA: {{ guess.not_aligned }}
+    <div class="col-xs-6 col-md-4 col-xs-offset-6 col-md-offset-4">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Previous Guess</th>
+                <th>On the Spot</th>
+                <th>Off Positioned</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for guess in guesses %}
+            <tr>
+                <td class="text-center">{{ guess.guess_num }}</td>
+                <td class="text-center">{{ guess.aligned }}</td>
+                <td class="text-center">{{ guess.not_aligned }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
     </div>
-{% endfor %}
-</div>
