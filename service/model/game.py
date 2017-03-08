@@ -17,6 +17,10 @@ class Game(ndb.Model):
         return Game.query().order(-Game.date).fetch()
 
     @classmethod
+    def list_all_unsolved_games_from_new_to_old(cls):
+        return Game.query(Game.is_solved == False).order(-Game.date).fetch()
+
+    @classmethod
     def guess(cls, game_id, guessNum):
         games = Game.query(Game.game_id == game_id).fetch()
 

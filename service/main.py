@@ -46,7 +46,7 @@ class MainPage(webapp2.RequestHandler):
 
 class GameListPage(webapp2.RequestHandler):
     def get(self):
-        games = Game.list_all_games_from_new_to_old()
+        games = Game.list_all_unsolved_games_from_new_to_old()
 
         template_values = {
             'games': games

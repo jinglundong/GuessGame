@@ -77,3 +77,23 @@ class TestGame(unittest.TestCase):
         self.assertEqual(1, len(games))
         self.assertEqual('ID1', games[0].game_id)
         self.assertEqual('1111', games[0].answer)
+
+    def test_list_all_unsolved_games_from_new_to_old(self):
+        now = datetime.now()
+
+        test_game_early = Game(
+            game_id = 'ID_OLD', answer = '1234', date = now)
+        test_game_early_key = test_game_early.put()
+
+        test_game_later = Game(
+            game_id = 'ID_OLD', answer = '1234', date = now + timedelta(days=1))
+        test_game_later_key = test_game_later.put()
+
+        test_game_solved = Game(
+            game_id = 'ID_OLD', answer = '1234', date = now, is_solved = True)
+        test_game_solved = test_game_early.put()
+
+        games = Game.list_all_games_from_new_to_old()
+
+        self.assertTrue(2, len(games))
+        self.assertTrue(games[0].date - games[1].date == timedelta(days=1))
