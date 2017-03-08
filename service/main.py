@@ -17,6 +17,7 @@ import jinja2
 import random
 import math
 import os
+import time
 
 from google.appengine.api import users
 
@@ -61,7 +62,12 @@ class CreateGame(webapp2.RequestHandler):
         answer = str(int(math.floor(random.random() * 10000)))
 
         Game.new_game(game_id, answer)
-        return webapp2.redirect('/game?game_id=' + game_id)
+        for retry in range(3):
+            if Game.query_game(game_id):
+                return webapp2.redirect('/game?game_id=' + game_id)
+            else:
+                time.sleep(0.5)
+        raise Exception("Couldn't read newly created game from data store.")
 
 class MakeGuess(webapp2.RequestHandler):
     def post(self):
@@ -91,7 +97,8 @@ class MakeGuess(webapp2.RequestHandler):
 
         template_values = {
             'guesses': guesses,
-            'game_id': game_id
+            'game_id': game_id,
+            'is_solved': game.is_solved
         }
 
         template = JINJA_ENVIRONMENT.get_template('view/guess_ajax.html')
@@ -105,12 +112,15 @@ class ListGuesses(webapp2.RequestHandler):
     def get(self):
         game_id = self.request.get('game_id')
 
+        game = Game.query_game(game_id)[0]
+
         guesses = Guess.list_all_guess_of_a_game(game_id)
         guesses.reverse()
 
         template_values = {
             'guesses': guesses,
-            'game_id': game_id
+            'game_id': game_id,
+            'is_solved' : game.is_solved
         }
 
         template = JINJA_ENVIRONMENT.get_template('view/game.html')
