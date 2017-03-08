@@ -98,6 +98,7 @@ class ListGuesses(webapp2.RequestHandler):
         game_id = self.request.get('game_id')
 
         guesses = Guess.list_all_guess_of_a_game(game_id)
+        guesses.reverse()
 
         template_values = {
             'guesses': guesses,
