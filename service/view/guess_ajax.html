@@ -1,0 +1,7 @@
+<div id="guesses">
+{% for guess in guesses %}
+    <div class="row">
+        Guess: {{ guess.guess_num }}, A: {{ guess.aligned }}, NA: {{ guess.not_aligned }}
+    </div>
+{% endfor %}
+</div>

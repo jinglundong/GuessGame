@@ -1,13 +1,33 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script> 
+<script>
+    $(document).ready(function() { 
+        $('#guessForm').ajaxForm(function(data) { 
+            $('#guesses').html(data);
+            $('#guessValue').val("");
+        }); 
+    }); 
+</script>
+</head>
+
+<body>
+<div id="guesses">
 {% for guess in guesses %}
     <div class="row">
         Guess: {{ guess.guess_num }}, A: {{ guess.aligned }}, NA: {{ guess.not_aligned }}
     </div>
 {% endfor %}
+</div>
 
 <div class="row">
-    <form action="/guess" method="post">
+    <form action="/guess" method="post" id="guessForm">
         <input type="hidden" name="game_id" value={{game_id}}>
-        <input type="text" name="guess">
-        <input type="submit" value="Guess">
+        <input type="text" name="guess" id="guessValue">
+        <input type="submit" value="Guess" id="submit">
     </form>
 </div>
+
+</body>
+</html>

@@ -73,6 +73,8 @@ class MakeGuess(webapp2.RequestHandler):
         indicator = Indicator()
         aligned, not_aligned = indicator.indicate(guess_num, answer)
 
+        guesses = Guess.list_all_guess_of_a_game(game_id)
+
         guess = Guess(
                     game_id = game_id,
                     user_id = 'test_user',
@@ -80,8 +82,15 @@ class MakeGuess(webapp2.RequestHandler):
                     aligned = aligned,
                     not_aligned = not_aligned)
         guess.put()
+        guesses.insert(0, guess)
 
-        return webapp2.redirect('/game?game_id=' + game_id)
+        template_values = {
+            'guesses': guesses,
+            'game_id': game_id
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('view/guess_ajax.html')
+        self.response.write(template.render(template_values))
 
 class ListGuesses(webapp2.RequestHandler):
     def get(self):
