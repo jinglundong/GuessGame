@@ -30,21 +30,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
-class MainPage(webapp2.RequestHandler):
-    def get(self):
-        user = users.get_current_user()
-        if user:
-            nickname = user.nickname()
-            logout_url = users.create_logout_url('/')
-            greeting = 'Welcome, {}! (<a href="{}">sign out</a>)'.format(
-                nickname, logout_url)
-        else:
-            login_url = users.create_login_url('/')
-            greeting = '<a href="{}">Sign in</a>'.format(login_url)
-
-        self.response.write(
-            '<html><body>{}</body></html>'.format(greeting))
-
 class GameListPage(webapp2.RequestHandler):
     def get(self):
         games = Game.list_all_unsolved_games_from_new_to_old()
@@ -71,12 +56,14 @@ class CreateGame(webapp2.RequestHandler):
 
 class MakeGuess(webapp2.RequestHandler):
     def post(self):
+        user = users.get_current_user()
+
         game_id = self.request.get('game_id')
         guess_num = self.request.get('guess')
 
         game = Game.query_game(game_id)[0]
         answer = game.answer
-        
+
         indicator = Indicator()
         aligned, not_aligned = indicator.indicate(guess_num, answer)
 
@@ -84,7 +71,7 @@ class MakeGuess(webapp2.RequestHandler):
 
         guess = Guess(
                     game_id = game_id,
-                    user_id = 'test_user',
+                    user_id = user.nickname(),
                     guess_num = str(guess_num),
                     aligned = aligned,
                     not_aligned = not_aligned)

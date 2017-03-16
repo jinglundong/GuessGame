@@ -1,11 +1,12 @@
 {% if guesses %}
-    <div class="col-xs-6 col-md-4 col-xs-offset-6 col-md-offset-4">
+    <div class="col-xs-12 col-md-8 col-xs-offset-3 col-md-offset-2">
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Previous Guess</th>
-                <th>On the Spot</th>
-                <th>Off Positioned</th>
+                <th class="text-center">Previous Guess</th>
+                <th class="text-center">On the Spot</th>
+                <th class="text-center">Off Positioned</th>
+                <th class="text-center">User</th>
             </tr>
         </thead>
         <tbody>
@@ -14,6 +15,7 @@
                 <td class="text-center">{{ guess.guess_num }}</td>
                 <td class="text-center">{{ guess.aligned }}</td>
                 <td class="text-center">{{ guess.not_aligned }}</td>
+                <td class="text-center">{{ guess.user_id}}</td>
             </tr>
         {% endfor %}
         </tbody>
