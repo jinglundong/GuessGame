@@ -75,8 +75,11 @@ class MakeGuess(webapp2.RequestHandler):
                     guess_num = str(guess_num),
                     aligned = aligned,
                     not_aligned = not_aligned)
-        guess.put()
-        guesses.insert(0, guess)
+
+        if not game.is_solved:
+          guess.put()
+          guesses.insert(0, guess)
+
         guesses.reverse()
 
         if aligned == 4:
