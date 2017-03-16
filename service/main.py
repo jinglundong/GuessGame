@@ -12,39 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import webapp2
 import jinja2
 import random
 import math
 import os
 import time
 
-from google.appengine.api import users
-
 from service.model.game import Game
 from service.model.guess import Guess
 from service.indicator import Indicator
+from flask import Flask
+
+app = Flask(__name__)
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
-class MainPage(webapp2.RequestHandler):
-    def get(self):
-        user = users.get_current_user()
-        if user:
-            nickname = user.nickname()
-            logout_url = users.create_logout_url('/')
-            greeting = 'Welcome, {}! (<a href="{}">sign out</a>)'.format(
-                nickname, logout_url)
-        else:
-            login_url = users.create_login_url('/')
-            greeting = '<a href="{}">Sign in</a>'.format(login_url)
-
-        self.response.write(
-            '<html><body>{}</body></html>'.format(greeting))
-
+@app.route('/games')
+@app.route('/')
 class GameListPage(webapp2.RequestHandler):
     def get(self):
         games = Game.list_all_unsolved_games_from_new_to_old()
@@ -56,6 +43,7 @@ class GameListPage(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('view/index.html')
         self.response.write(template.render(template_values))
 
+@app.route('/new_game')
 class CreateGame(webapp2.RequestHandler):
     def post(self):
         game_id = str(int(math.floor(random.random() * 10000000)))
@@ -69,6 +57,7 @@ class CreateGame(webapp2.RequestHandler):
                 time.sleep(0.5)
         raise Exception("Couldn't read newly created game from data store.")
 
+@app.route('/guess')
 class MakeGuess(webapp2.RequestHandler):
     def post(self):
         game_id = self.request.get('game_id')
@@ -108,6 +97,7 @@ class MakeGuess(webapp2.RequestHandler):
         game.is_solved = True
         game.put()
 
+@app.route('/game')
 class ListGuesses(webapp2.RequestHandler):
     def get(self):
         game_id = self.request.get('game_id')
@@ -126,12 +116,7 @@ class ListGuesses(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('view/game.html')
         self.response.write(template.render(template_values))
 
-app = webapp2.WSGIApplication([
-    ('/', GameListPage),
-    ('/games', GameListPage),
-    ('/new_game', CreateGame),
-    ('/guess', MakeGuess),
-    ('/game', ListGuesses)
-
- 
-], debug=True)
+if __name__ == '__main__':
+# This is used when running locally. Gunicorn is used to run the
+#     # application on Google App Engine. See entrypoint in app.yaml.
+    app.run(host='127.0.0.1', port=8080, debug=True)

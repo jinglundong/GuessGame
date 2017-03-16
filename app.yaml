@@ -1,6 +1,8 @@
-runtime: python27
-api_version: 1
-threadsafe: true
+runtime: python
+env: flex
+
+runtime_config:
+  python_version: 3
 
 handlers:
 - url: /js
@@ -8,7 +10,6 @@ handlers:
 
 - url: /.*
   script: service.main.app
-
 
 libraries:
 - name: webapp2
