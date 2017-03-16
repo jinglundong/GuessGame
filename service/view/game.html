@@ -5,11 +5,8 @@
         $('#guessForm').ajaxForm(function(data) { 
             $('#guesses').html(data);
             $('#guessValue').val("");
-            var isSolved = "<h2 class=\"text-center\"> This game is solved. </h2>"
-            $('#is-solved').html(isSolved);
-            $('#submit').prop('disabled', true);
-        }); 
-    }); 
+        });
+    });
 </script>
 {% include 'view/jumbotron.html' %}
 <div class="container">

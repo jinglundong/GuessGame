@@ -19,4 +19,11 @@
         </tbody>
     </table>
     </div>
+    {% if is_solved %}
+    <script> 
+        var game_solved_msg = "<h2 class=\"text-center\"> This game is solved. </h2>";
+        $('#is-solved').html(game_solved_msg);
+        $('#submit').prop('disabled', true);
+    </script>
+    {% endif %}
 {% endif %}
